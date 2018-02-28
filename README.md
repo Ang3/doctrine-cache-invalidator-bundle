@@ -7,8 +7,8 @@ A [Symfony](https://symfony.com) bundle to manage doctrine result cache invalida
 
 You can install the bundle in 2 different ways:
 
-- Install it via Composer (ang3/doctrine-cache-invalidator-bundle on Packagist) **[NOT AVAILABLE YET]**
-- Use the official Git repository (https://github.com/Ang3/DoctrineCacheInvalidatorBundle) **[NOT AVAILABLE YET]**
+- Install it via Composer (ang3/doctrine-cache-invalidator-bundle on Packagist)
+- Use the official Git repository (https://github.com/Ang3/DoctrineCacheInvalidatorBundle)
 
 ### Enable the bundle
 
