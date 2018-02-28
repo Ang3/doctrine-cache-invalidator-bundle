@@ -1,6 +1,8 @@
 DoctrineCacheInvalidatorBundle
 ==============================
 
+[![Build Status](https://travis-ci.org/Ang3/DoctrineCacheInvalidatorBundle.svg?branch=master)](https://travis-ci.org/Ang3/DoctrineCacheInvalidatorBundle) [![Latest Stable Version](https://poser.pugx.org/ang3/doctrine-cache-invalidator-bundle/v/stable)](https://packagist.org/packages/ang3/doctrine-cache-invalidator-bundle) [![Latest Unstable Version](https://poser.pugx.org/ang3/doctrine-cache-invalidator-bundle/v/unstable)](https://packagist.org/packages/ang3/doctrine-cache-invalidator-bundle) [![Total Downloads](https://poser.pugx.org/ang3/doctrine-cache-invalidator-bundle/downloads)](https://packagist.org/packages/ang3/doctrine-cache-invalidator-bundle)
+
 A [Symfony](https://symfony.com) bundle to manage doctrine result cache invalidations.
 
 ## Installation
