@@ -13,8 +13,8 @@
     ],
     "require": {
         "php": "~7.1",
-        "symfony/framework-bundle": "^3.0",
-        "symfony/expression-language": "^3.0"
+        "symfony/symfony": "^3.0",
+        "doctrine/orm": "^2.6"
     },
     "autoload": {
         "psr-4": { "Ang3\\Bundle\\DoctrineCacheInvalidatorBundle\\": "" }
