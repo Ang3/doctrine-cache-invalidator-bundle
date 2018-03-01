@@ -71,22 +71,17 @@ Suppose you have a result cache ID registered in the repository class ```AppBund
 ```php
 // src/AppBundle/Repository/MyRepository.php
 
-//...
+// ...
 
-public function findWhatEver(/* ... */)
-{
+$qb
   // ...
-  $qb
-    // ...
-    // Get the query
-    ->getQuery()
-    // Register an ID to invalidate results
-    ->setResultCacheId('my_custom_id')
-    // Get the result as you want
-    ->getResult() # Or what ever
-  ;
-  // ...
-}
+  // Get the query
+  ->getQuery()
+  // Register an ID to invalidate results
+  ->setResultCacheId('my_custom_id')
+  // Get the result as you want
+  ->getResult() # Or what ever
+;
 
 // ...
 ```
