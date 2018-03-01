@@ -39,7 +39,7 @@ class AppKernel extends Kernel
   {
     $bundles = array(
       // ...
-      new Ang3\DoctrineCacheInvalidatorBundle\Ang3DoctrineCacheInvalidatorBundle(),
+      new Ang3\Bundle\DoctrineCacheInvalidatorBundle\Ang3DoctrineCacheInvalidatorBundle(),
     );
 
     // ...
