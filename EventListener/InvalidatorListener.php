@@ -2,7 +2,10 @@
 
 namespace Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener;
 
-use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\ResolverInterface;
+use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Exception\CacheInvalidationException;
+use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver;
+use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolverInterface;
+use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Annotation\CacheInvalidation;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Psr\Log\LoggerInterface;
@@ -15,11 +18,11 @@ use Psr\Log\LoggerInterface;
 class InvalidatorListener
 {
     /**
-     * Entity keys resolver.
+     * Cache invalidator parameters.
      *
-     * @var EntityResolver
+     * @var array|null
      */
-    protected $resolver;
+    protected $parameters;
 
     /**
      * Logger.
@@ -31,12 +34,12 @@ class InvalidatorListener
     /**
      * Constructor of the listener.
      *
-     * @param ResolverInterface    $resolver
+     * @param array                $parameters
      * @param LoggerInterface|null $logger
      */
-    public function __construct(ResolverInterface $resolver, LoggerInterface $logger = null)
+    public function __construct(array $parameters = [], LoggerInterface $logger = null)
     {
-        $this->resolver = $resolver;
+        $this->parameters = $parameters;
         $this->logger = $logger;
     }
 
@@ -52,6 +55,17 @@ class InvalidatorListener
 
         // Récupération de l'unité de travail
         $unitOfWork = $entityManager->getUnitOfWork();
+
+        // Définition de resolver à utiliser
+        $resolverClass = array_key_exists('resolver_class', $this->parameters) ? ($this->parameters['resolver_class'] ?: CacheIdResolver::class) : CacheIdResolver::class;
+
+        // Si le résolveur n'implémente pas l'interface requise
+        if(!(ClassUtils::newReflectionClass($resolverClass)->newInstanceWithoutConstructor() instanceof CacheIdResolverInterface)) {
+            throw new CacheInvalidationException('The resolver class "%s" must implements interface "%s".', $resolverClass, CacheIdResolverInterface::class);
+        }
+
+        // Création du résolveur d'ID de cache
+        $cacheIdResolver = new $resolverClass($entityManager);
 
         // Récupération des changements
         $scheduledEntityChanges = array(
@@ -71,10 +85,10 @@ class InvalidatorListener
                 $changeSet = 'update' == $eventType ? $unitOfWork->getEntityChangeSet($entity) : [];
 
                 // Récupération des clés à supprimer pour cette entité
-                $entityKeys = $this->resolver->resolve($entity, $eventType, $changeSet);
+                $entityCacheIds = $cacheIdResolver->resolve($entity, $eventType, $changeSet);
 
                 // Si pas de clé
-                if (!$entityKeys) {
+                if (!$entityCacheIds) {
                     // Entité suivante
                     continue;
                 }
@@ -86,16 +100,16 @@ class InvalidatorListener
                 $entityId = 'insert' !== $eventType ? $entity->{sprintf('get%s', ucfirst($entityManager->getClassMetadata($entityClass)->getSingleIdentifierFieldName()))}() : 0;
 
                 // Pour chque clé de l'entité
-                foreach ($entityKeys as $key => $entityKey) {
+                foreach ($entityCacheIds as $key => $entityCacheId) {
                     // Si la clé n'est pas déjà enregistré pour suppression
-                    if (!in_array($entityKey, $cacheKeys)) {
+                    if (!in_array($entityCacheId, $cacheKeys)) {
                         // Enregistrement de la clé à supprimer
-                        $cacheKeys[] = $entityKey;
+                        $cacheKeys[] = $entityCacheId;
 
                         // Si on a un logger
                         if ($this->logger) {
                             // On log les clés à supprimer
-                            $this->logger->info(sprintf('[%s #%d] [%s] Key to delete : %s', $entityClass, $entityId, $eventType, $entityKey));
+                            $this->logger->info(sprintf('[%s #%d] [%s] Key to delete : %s', $entityClass, $entityId, $eventType, $entityCacheId));
                         }
                     }
                 }

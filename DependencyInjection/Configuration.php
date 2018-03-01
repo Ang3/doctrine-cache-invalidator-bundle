@@ -24,7 +24,6 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('mapping')->cannotBeEmpty()->isRequired()->end()
                 ->scalarNode('logger')->defaultNull()->end()
             ->end()
         ;

@@ -21,12 +21,9 @@ class Ang3DoctrineCacheInvalidatorExtension extends Extension implements Compile
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
-        // Envoi des paramètres du cache dans le container
-        $container->setParameter('ang3_doctrine_cache_invalidator.mapping', $config['mapping']);
-
-        // Envoi des paramètres du cache dans le container
-        $container->setParameter('ang3_doctrine_cache_invalidator.logger', $config['logger']);
+        
+        // Envoi des paramètres d'invalidation dans le container
+        $container->setParameter('ang3_doctrine_cache_invalidator.parameters', $config);
 
         // Définition d'un chargeur de fichier YAML
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
@@ -41,7 +38,7 @@ class Ang3DoctrineCacheInvalidatorExtension extends Extension implements Compile
     public function process(ContainerBuilder $container)
     {
         // Si on a un logger
-        if ($logger = $container->getParameter('ang3_doctrine_cache_invalidator.logger')) {
+        if ($logger = $container->getParameter('ang3_doctrine_cache_invalidator.parameters')['logger']) {
             // Si le service n'existe pas
             if (!$container->hasDefinition($logger)) {
                 throw new InvalidArgumentException(sprintf('Unable to find service "%s"', $logger));

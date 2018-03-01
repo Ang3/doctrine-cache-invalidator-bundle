@@ -5,16 +5,11 @@ services:
     public: false
   Ang3\Bundle\DoctrineCacheInvalidatorBundle\:
     resource: '../../{EventListener,Exception,Factory,Mapping,Resolver}/*'
-
-  # ENTITY RESOLVER
-  Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\EntityResolver:
-    factory: 'Ang3\Bundle\DoctrineCacheInvalidatorBundle\Factory\EntityResolverFactory:createFromYaml'
-    arguments:
-      - '%ang3_doctrine_cache_invalidator.mapping%'
   
   # LISTENER
   Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener\InvalidatorListener:
     arguments:
+      $parameters: '@ang3_doctrine_cache_invalidator.parameters'
       $logger: '@ang3_doctrine_cache_invalidator.logger'
     tags :
       - { name: doctrine.event_listener, event: onFlush }
