@@ -91,7 +91,7 @@ The invalidation process is during the "flush" entity operation. On each entity,
 ```php
 // src/AppBundle/Entity/EntityA.php
 
-// ...
+// Do not forget the "use" statement
 use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
 // ...
 
@@ -117,6 +117,12 @@ The [CacheInvalidation annotation](https://github.com/Ang3/DoctrineCacheInvalida
 In case of dynamic result cache ID, you can register variables like PHP (with ```$```), but you have to specify the related expression under the "parameters" option. I suggest you to use the dot ```.``` to end the variable name:
 
 ```php
+// src/AppBundle/Entity/EntityA.php
+
+// Do not forget the "use" statement
+use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
+// ...
+
 /**
  * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"})
  */
@@ -130,7 +136,13 @@ class EntityA
 
 You can also submit the entity to a validation during process. You just have to specify an expression so to as to return a boolean value. The result cache ID is deleted if the expression returns *TRUE* **or equivalent** (castable).
 
-```yaml
+```php
+// src/AppBundle/Entity/EntityA.php
+
+// Do not forget the "use" statement
+use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
+// ...
+
 /**
  * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"}, validation="eventType == 'update'")
  */
