@@ -5,129 +5,152 @@ DoctrineCacheInvalidatorBundle
 
 A [Symfony](https://symfony.com) bundle to manage doctrine result cache invalidations.
 
-## Installation
+Installation
+============
 
-You can install the bundle in 2 different ways:
+Step 1: Download the Bundle
+---------------------------
 
-- Install it via Composer (ang3/doctrine-cache-invalidator-bundle on Packagist)
-- Use the official Git repository (https://github.com/Ang3/DoctrineCacheInvalidatorBundle)
+Open a command console, enter your project directory and execute the
+following command to download the latest stable version of this bundle:
 
-### Enable the bundle
+```console
+$ composer require ang3/doctrine-cache-invalidator-bundle
+```
 
-To start using the bundle, register the bundle in your application's kernel class:
+This command requires you to have Composer installed globally, as explained
+in the [installation chapter](https://getcomposer.org/doc/00-intro.md)
+of the Composer documentation.
+
+Step 2: Enable the Bundle
+-------------------------
+
+Then, enable the bundle by adding it to the list of registered bundles
+in the `app/AppKernel.php` file of your project:
 
 ```php
+<?php
 // app/AppKernel.php
+
+// ...
 class AppKernel extends Kernel
 {
   public function registerBundles()
   {
-    $bundles = [
+    $bundles = array(
       // ...
-      new Ang3\Bundle\DoctrineCacheInvalidatorBundle\Ang3DoctrineCacheInvalidatorBundle(),
-      // ...
-    ];
+      new Ang3\DoctrineCacheInvalidatorBundle\Ang3DoctrineCacheInvalidatorBundle(),
+    );
+
+    // ...
   }
+
+  // ...
 }
 ```
 
-### Configuration reference
+Step 3: Configure your app
+-------------------------
+
+No config is required, but you can configure a specific logger or cache ids resolver class:
 
 ```yaml
-# app/config.yml
+# app/config/config.yml
 ang3_doctrine_cache_invalidator:
-  mapping: '<MAPPING_FILE_PATH>' # The required path of the mapping file (example : '@AppBundle/Resources/config/cache/mapping.yml')
-  logger: ~ # Service instance of Psr\Log\LoggerInterface - default: null
+  logger: ~ # An optionnal logger ID
+  resolver_class: 'Ang3\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver' # default value
 ```
 
-### Mapping
+Usage
+=====
 
-Create the mapping file in the location of your configuration (in this example ```@AppBundle/Resources/config/cache/mapping.yml```). The file must have this minimal configuration :
+## Context
 
-```yaml
-# src/AppBundle/Resouces/config/cache/mapping.yml
-mapping:
-  # Content here...
-```
-
-## Basic Usage
-
-### Context
-
-Result cache ID registered in a method of repository class ```AppBundle\Entity\MyRepository```.
+You have a result cache ID registered in the repository class ```AppBundle\Entity\MyRepository```.
 
 ```php
 // src/AppBundle/Repository/MyRepository.php
-$qb
+
+//...
+
+public function findWhatEver(/* ... */)
+{
   // ...
-  // Get the query
-  ->getQuery()
-  // Register an ID to invalidate results
-  ->setResultCacheId('my_custom_id')
-  // Get the result as you want
-  ->getResult() # Or what ever
-;
+  $qb
+    // ...
+    // Get the query
+    ->getQuery()
+    // Register an ID to invalidate results
+    ->setResultCacheId('my_custom_id')
+    // Get the result as you want
+    ->getResult() # Or what ever
+  ;
+  // ...
+}
+
+// ...
 ```
 
-### Mapping
+## Invalidation
 
-This mapping file contains all conditions of invalidations by cache IDs and classes. For each flushed entity by the *default entity manager*, the mapping allows you to determine wich keys should be deleted.
+The invalidation process is during the "flush" entity operation. On each entity, the resolver is called so as to define potential cache indexes to delete. To do that, you just have to write an annotation on concerned entities and configure it.
 
-**All used expressions** in the mapping are evaluated by the component [symfony/expression-language](https://packagist.org/packages/symfony/expression-language).
+```php
+// src/AppBundle/Entity/EntityA.php
 
-```yaml
-# src/AppBundle/Resouces/config/cache/mapping.yml
-mapping:
-  cache_id_1: # ID of the result cache
-    AppBundle\YourClass1:
-      parameters: <EXPRESSION> # Optional if no parameter in the cache ID
-      validation: <EXPRESSION> # Optional - Validation of the class
-    AppBundle\YourClass2:
-      parameters: <EXPRESSION> # Optional if no parameter in the cache ID
-      validation: <EXPRESSION> # Optional - Validates of the class
-    # ...
-  cache_id_2:
-    AppBundle\YourClass1:
-      parameters: <EXPRESSION> # Optional if no parameter in the cache ID
-      validation: <EXPRESSION> # Optional - Validation of the class
-  # ...
+// ...
+
+use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
+
+/**
+ * @Ang3\CacheInvalidation(id="my_custom_id")
+ */
+class EntityA
+{
+  // ...
+}
 ```
+
+## Options
+
+The [CacheInvalidation annotation](https://github.com/Ang3/DoctrineCacheInvalidatorBundle/blob/master/Annotation/CacheInvalidation.php) has three parameters :
+
+- ```id``` (required) : result cache id to delete
+- ```parameters``` (optional) : associative array of potential ID parameters (the value is represented by an **expression**)
+- ```validation``` (optional) : an other **expression** to validate a specific entity
 
 ### Dynamic ID and parameters
 
-In case of dynamic ID, you can register variables like PHP (with ```$```), but you have to specify the related expression under the "parameters" section of the node. I suggest you to use the dot ```.``` to end the variable name.
+In case of dynamic result cache ID, you can register variables like PHP (with ```$```), but you have to specify the related expression under the "parameters" option. I suggest you to use the dot ```.``` to end the variable name:
 
-```yaml
-# src/AppBundle/Resouces/config/cache/mapping.yml
-mapping:
-  my_cache_id_$param_1:
-    AppBundle\YourClass1:
-      parameters:
-        param_1: <EXPRESSION>
+```php
+/**
+ * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"})
+ */
+class EntityA
 ```
 
 ### Validation
 
-You can submit the entity to a validation during process. You just have to specify an expression. The cache ID is deleted if the expression returns *TRUE*.
+You can also submit the entity to a validation during process. You just have to specify an expression so to as to return a boolean value. The result cache ID is deleted if the expression returns *TRUE* **or equivalent** (castable).
 
 ```yaml
-# src/AppBundle/Resouces/config/cache/mapping.yml
-mapping:
-  cache_id_$param_1:
-    AppBundle\YourClass1:
-      parameters:
-        param_1: <EXPRESSION>
-        validation: <EXPRESSION> # If the expression results true, the ID is deleted
+/**
+ * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"}, validation="eventType == 'update'")
+ */
+class EntityA
 ```
 
 ### Expressions
 
+**All used expressions** are evaluated by the component [symfony/expression-language](https://packagist.org/packages/symfony/expression-language).
+
 For each expression these variables are passed during the evaluation :
 
-- ```this``` the added/edited/deleted entity
-- ```eventType``` 'insert', 'update' ou 'delete' (string)
-- ```changeSet``` entity updated fields values in case of update (empty array if eventType is equal to 'insert' or 'delete')
+- ```this``` (object) the added/edited/deleted entity
+- ```eventType``` (string) 'insert', 'update' ou 'delete'
+- ```changeSet``` (array) entity updated fields values in case of update (empty array if eventType is equal to 'insert' or 'delete')
 
 ## Todo
 
-- Use more than the default entity manager.
+[ ] Use more than the default entity manager (get doctrine registry in the listener, then add 'entity_manager' option in the annotation and check entity manager during the flush operation) !
