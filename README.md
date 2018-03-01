@@ -72,7 +72,6 @@ Suppose you have a result cache ID registered in the repository class ```AppBund
 // src/AppBundle/Repository/MyRepository.php
 
 // ...
-
 $qb
   // ...
   // Get the query
@@ -82,7 +81,6 @@ $qb
   // Get the result as you want
   ->getResult() # Or what ever
 ;
-
 // ...
 ```
 
@@ -94,8 +92,8 @@ The invalidation process is during the "flush" entity operation. On each entity,
 // src/AppBundle/Entity/EntityA.php
 
 // ...
-
 use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
+// ...
 
 /**
  * @Ang3\CacheInvalidation(id="my_custom_id")
@@ -123,6 +121,9 @@ In case of dynamic result cache ID, you can register variables like PHP (with ``
  * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"})
  */
 class EntityA
+{
+  // ...
+}
 ```
 
 ### Validation
@@ -134,6 +135,9 @@ You can also submit the entity to a validation during process. You just have to 
  * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"}, validation="eventType == 'update'")
  */
 class EntityA
+{
+  // ...
+}
 ```
 
 ### Expressions
