@@ -1,15 +1,16 @@
 services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-    public: false
-  Ang3\Bundle\DoctrineCacheInvalidatorBundle\:
-    resource: '../../{EventListener,Exception,Factory,Mapping,Resolver}/*'
-  
-  # LISTENER
-  Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener\InvalidatorListener:
+  # Cache ID resolver service
+  ang3_doctrine_invalidator.cache_id_resolver:
+    class: Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver
     arguments:
-      $parameters: '%ang3_doctrine_cache_invalidator.parameters%'
-      $logger: '@ang3_doctrine_cache_invalidator.logger'
+      - '@doctrine.orm.entity_manager'
+    tags :
+      - { name: doctrine.event_listener, event: onFlush }
+  # Result cache ID invalidator listener
+  ang3_doctrine_invalidator.invalidator_listener:
+    class: Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener\InvalidatorListener
+    arguments:
+      - '%ang3_doctrine_cache_invalidator.parameters%'
+      - '@ang3_doctrine_cache_invalidator.logger'
     tags :
       - { name: doctrine.event_listener, event: onFlush }
