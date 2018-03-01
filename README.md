@@ -66,7 +66,7 @@ Usage
 
 ## Context
 
-You have a result cache ID registered in the repository class ```AppBundle\Entity\MyRepository```.
+Suppose you have a result cache ID registered in the repository class ```AppBundle\Repository\MyRepository```.
 
 ```php
 // src/AppBundle/Repository/MyRepository.php
