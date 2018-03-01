@@ -11,6 +11,8 @@ use Doctrine\Common\Annotations\Annotation;
 final class CacheInvalidation
 {
     /**
+     * The result cache ID.
+     * 
      * @Required
      *
      * @var string
@@ -18,11 +20,15 @@ final class CacheInvalidation
     public $id;
 
     /**
+     * Values of potential dynamic ID parameters.
+     * 
      * @var array
      */
     public $parameters = [];
 
     /**
+     * Optional validation expression.
+     * 
      * @var string|null
      */
     public $validation = null;

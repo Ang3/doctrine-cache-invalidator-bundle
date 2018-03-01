@@ -2,6 +2,7 @@
 
 namespace Ang3\Bundle\DoctrineCacheInvalidatorBundle\DependencyInjection;
 
+use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -25,6 +26,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('logger')->defaultNull()->end()
+                ->scalarNode('resolver_class')->defaultNull(CacheIdResolver::class)->end()
             ->end()
         ;
 

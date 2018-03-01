@@ -9,7 +9,7 @@ services:
   # LISTENER
   Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener\InvalidatorListener:
     arguments:
-      $parameters: '@ang3_doctrine_cache_invalidator.parameters'
+      $parameters: '%ang3_doctrine_cache_invalidator.parameters%'
       $logger: '@ang3_doctrine_cache_invalidator.logger'
     tags :
       - { name: doctrine.event_listener, event: onFlush }
