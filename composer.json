@@ -12,9 +12,9 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9 ~7.0",
-        "symfony/symfony": "^2.8 || ^3.0",
-        "doctrine/orm": "^2.5 || ^2.6"
+        "php": ">=5.5.9",
+        "symfony/framework-bundle": "~2.7|~3.0|~4.0",
+        "doctrine/orm": "^2.5"
     },
     "autoload": {
         "psr-4": { "Ang3\\Bundle\\DoctrineCacheInvalidatorBundle\\": "" }
