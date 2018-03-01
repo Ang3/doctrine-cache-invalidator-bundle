@@ -47,15 +47,15 @@ class CacheIdResolver implements CacheIdResolverInterface
         $entityClass = ClassUtils::getClass($entity);
 
         // Récupération des métadonnées de l'entité
-        $classMetadata = $entityManager->getClassMetadata($entityClass);
+        $classMetadata = $this->entityManager->getClassMetadata($entityClass);
 
         // Initialisation des ID de cache
         $cacheIds = [];
 
         // Pour chaque annotation d'invalidation du cache de la classe
-        foreach($this->annotationReader->getClassAnnotations($classMetadata->getReflectionClass()) as $annotation) {
+        foreach ($this->annotationReader->getClassAnnotations($classMetadata->getReflectionClass()) as $annotation) {
             // Si c'est une annotation d'invalidation du cache
-            if($annotation instanceof CacheInvalidation) {
+            if ($annotation instanceof CacheInvalidation) {
                 // Récupération de l'ID de cache
                 $cacheId = $annotation->id;
 
@@ -79,7 +79,9 @@ class CacheIdResolver implements CacheIdResolverInterface
                         try {
                             // Récupération de la valeur du paramètre
                             $paramValue = (string) $this->expressionLanguage
-                                ->evaluate($annotation->parameters[$name], [
+                                ->evaluate(
+                                    $annotation->parameters[$name],
+                                    [
                                     'this' => $entity,
                                     'eventType' => $eventType,
                                     'changeSet' => $changeSet,
@@ -101,7 +103,9 @@ class CacheIdResolver implements CacheIdResolverInterface
                         try {
                             // Tentative de récupération du résultat de l'expression de validation
                             $validation = (bool) $this->expressionLanguage
-                                ->evaluate($annotation->validation, [
+                                ->evaluate(
+                                    $annotation->validation,
+                                    [
                                     'this' => $entity,
                                     'eventType' => $eventType,
                                     'changeSet' => $changeSet,

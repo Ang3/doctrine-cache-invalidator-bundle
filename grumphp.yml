@@ -1,11 +1,12 @@
 parameters:
-  git_dir: .
-  bin_dir: vendor/bin
+  git_dir: "./"
+  bin_dir: "./vendor/bin"
   tasks:
     composer: ~
     phpcsfixer2:
       allow_risky: false
       cache_file: ~
+      config: ~
       rules:
         '@Symfony': true
         indentation_type: false
@@ -13,6 +14,7 @@ parameters:
           allow_single_line_closure: false
           position_after_functions_and_oop_constructs: "next"
       using_cache: true
+      #config_contains_finder: false
       verbose: true
       diff: false
       triggered_by: ['php']

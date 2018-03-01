@@ -12,7 +12,7 @@ class CacheInvalidationException extends RuntimeException
 {
     /**
      * Constructor of the exception.
-     * 
+     *
      * @param string         $message
      * @param Throwable|null $previous
      */

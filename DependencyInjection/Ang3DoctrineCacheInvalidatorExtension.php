@@ -21,7 +21,7 @@ class Ang3DoctrineCacheInvalidatorExtension extends Extension implements Compile
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        
+
         // Envoi des paramètres d'invalidation dans le container
         $container->setParameter('ang3_doctrine_cache_invalidator.parameters', $config);
 

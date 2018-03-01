@@ -5,7 +5,6 @@ namespace Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener;
 use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Exception\CacheInvalidationException;
 use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver;
 use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolverInterface;
-use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Annotation\CacheInvalidation;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Psr\Log\LoggerInterface;
@@ -60,7 +59,7 @@ class InvalidatorListener
         $resolverClass = array_key_exists('resolver_class', $this->parameters) ? ($this->parameters['resolver_class'] ?: CacheIdResolver::class) : CacheIdResolver::class;
 
         // Si le résolveur n'implémente pas l'interface requise
-        if(!(ClassUtils::newReflectionClass($resolverClass)->newInstanceWithoutConstructor() instanceof CacheIdResolverInterface)) {
+        if (!(ClassUtils::newReflectionClass($resolverClass)->newInstanceWithoutConstructor() instanceof CacheIdResolverInterface)) {
             throw new CacheInvalidationException('The resolver class "%s" must implements interface "%s".', $resolverClass, CacheIdResolverInterface::class);
         }
 

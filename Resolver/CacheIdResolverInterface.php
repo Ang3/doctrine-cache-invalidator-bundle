@@ -11,7 +11,7 @@ interface CacheIdResolverInterface
      * Gets entity cache ids from entity annotation and event metadata.
      *
      * @param object       $entity
-     * @param string 	   $eventType
+     * @param string       $eventType
      * @param array|string $changeSet
      *
      * @return array
