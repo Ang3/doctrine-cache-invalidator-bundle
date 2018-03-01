@@ -1,6 +1,6 @@
 parameters:
-  git_dir: "./"
-  bin_dir: "./vendor/bin"
+  git_dir: .
+  bin_dir: vendor/bin
   tasks:
     composer: ~
     phpcsfixer2:
@@ -14,12 +14,11 @@ parameters:
           allow_single_line_closure: false
           position_after_functions_and_oop_constructs: "next"
       using_cache: true
-      #config_contains_finder: false
       verbose: true
       diff: false
       triggered_by: ['php']
     phplint: ~
-    phpunit: ~
+    #phpunit: ~
     yamllint: ~
   ascii:
     failed: ~
