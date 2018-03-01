@@ -164,4 +164,4 @@ For each expression these variables are passed during the evaluation :
 
 ## Todo
 
-[ ] Use more than the default entity manager (get doctrine registry in the listener, then add 'entity_manager' option in the annotation and check entity manager during the flush operation) !
+- [ ] Use more than the default entity manager (get doctrine registry in the listener, then add 'entity_manager' option in the annotation and check entity manager during the flush operation) !
