@@ -2,7 +2,7 @@
     "name": "ang3/doctrine-cache-invalidator-bundle",
     "type": "symfony-bundle",
     "description": "Doctrine cache invalidator.",
-    "keywords": ["doctrine", "cache", "invalidator", "invalidate", "second", "level", "cache"],
+    "keywords": ["doctrine", "cache", "invalidator", "invalidate", "invalidation", "second", "level", "cache"],
     "license": "MIT",
     "authors": [
         {
