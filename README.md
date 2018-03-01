@@ -162,6 +162,7 @@ For each expression these variables are passed during the evaluation :
 - ```eventType``` (string) 'insert', 'update' ou 'delete'
 - ```changeSet``` (array) entity updated fields values in case of update (empty array if eventType is equal to 'insert' or 'delete')
 
-## Todo
+Todo
+====
 
 - [ ] Use more than the default entity manager (get doctrine registry in the listener, then add 'entity_manager' option in the annotation and check entity manager during the flush operation) !
