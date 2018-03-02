@@ -49,7 +49,7 @@ class AppKernel extends Kernel
 }
 ```
 
-Step 3: Configure your app
+Step 3: Configure your app (optional)
 -------------------------
 
 No config is required, but you can configure a specific logger:
@@ -57,7 +57,7 @@ No config is required, but you can configure a specific logger:
 ```yaml
 # app/config/config.yml
 ang3_doctrine_cache_invalidator:
-  logger: ~ # An optionnal logger ID
+  logger: ~ # An optionnal logger ID (Psr/Log/LoggerInterface)
 ```
 
 Usage
