@@ -74,7 +74,7 @@ class InvalidatorListener
         );
 
         // Initialisation des clés à supprimer
-        $cacheKeys = [];
+        $cacheIds = [];
 
         // Pour chaque type de changement
         foreach ($scheduledEntityChanges as $eventType => $entities) {
@@ -101,9 +101,9 @@ class InvalidatorListener
                 // Pour chque clé de l'entité
                 foreach ($entityCacheIds as $key => $entityCacheId) {
                     // Si la clé n'est pas déjà enregistré pour suppression
-                    if (!in_array($entityCacheId, $cacheKeys)) {
+                    if (!in_array($entityCacheId, $cacheIds)) {
                         // Enregistrement de la clé à supprimer
-                        $cacheKeys[] = $entityCacheId;
+                        $cacheIds[] = $entityCacheId;
 
                         // Si on a un logger
                         if ($this->logger) {
@@ -119,7 +119,7 @@ class InvalidatorListener
         $resultCache = $entityManager->getConfiguration()->getResultCacheImpl();
 
         // Si pas de clé à supprimer
-        if (!$cacheKeys) {
+        if (!$cacheIds) {
             // On log la clé supprimée
             $this->logger->info('No key to delete.');
 
@@ -130,14 +130,14 @@ class InvalidatorListener
         // Si on a un logger
         if ($this->logger) {
             // On log les clés à supprimer
-            $this->logger->info(sprintf('All keys to delete : %s', implode(',', $cacheKeys)));
+            $this->logger->info(sprintf('All keys to delete : %s', implode(',', $cacheIds)));
         }
 
         // Compteur de suppressions
         $counter = 0;
 
         // Pour chaque index
-        foreach ($cacheKeys as $key => $cacheId) {
+        foreach ($cacheIds as $key => $cacheId) {
             // Si le cache contient l'index
             if ($resultCache->contains($cacheId)) {
                 // Suppression
