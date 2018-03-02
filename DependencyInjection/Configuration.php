@@ -26,7 +26,7 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('logger')->defaultNull()->end()
-                ->scalarNode('resolver_class')->defaultNull(CacheIdResolver::class)->end()
+                ->scalarNode('resolver_class')->defaultValue(CacheIdResolver::class)->end()
             ->end()
         ;
 
