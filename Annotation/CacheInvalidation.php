@@ -24,12 +24,12 @@ final class CacheInvalidation
      *
      * @var array
      */
-    public $parameters = [];
+    public $parameters;
 
     /**
      * Optional validation expression.
      *
-     * @var string|null
+     * @var string
      */
-    public $validation = null;
+    public $validation;
 }
