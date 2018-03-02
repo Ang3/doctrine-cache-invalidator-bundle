@@ -1,6 +1,6 @@
 services:
   # Cache ID resolver service
-  ang3_doctrine_invalidator.cache_id_resolver:
+  ang3_doctrine_invalidator.default_cache_id_resolver:
     class: Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver
     arguments:
       - '@doctrine.orm.entity_manager'
@@ -9,7 +9,7 @@ services:
   ang3_doctrine_invalidator.invalidator_listener:
     class: Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener\InvalidatorListener
     arguments:
-      - '%ang3_doctrine_cache_invalidator.parameters%'
+      - '@ang3_doctrine_cache_invalidator.cache_id_resolver'
     calls:
         - [setLogger, ['@?ang3_doctrine_cache_invalidator.logger']]
     tags :

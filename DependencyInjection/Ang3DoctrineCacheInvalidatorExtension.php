@@ -37,18 +37,38 @@ class Ang3DoctrineCacheInvalidatorExtension extends Extension implements Compile
      */
     public function process(ContainerBuilder $container)
     {
+        // Récupération des paramètres
+        $parameters = $container->getParameter('ang3_doctrine_cache_invalidator.parameters');
+
         // Si on a un logger
-        if ($logger = $container->getParameter('ang3_doctrine_cache_invalidator.parameters')['logger']) {
+        if ($logger = $parameters['logger']) {
             // Si le service n'existe pas
             if (!$container->hasDefinition($logger)) {
                 throw new InvalidArgumentException(sprintf('Unable to find service "%s"', $logger));
             }
 
-            // Normalisation du nom du service logger
-            $logger = '@' == substr($logger, 0, 1) ? substr($logger, 1) : $logger;
-
             // Enregistrement d'un alias sur le logger
-            $container->setAlias('ang3_doctrine_cache_invalidator.logger', $logger);
+            $container->setAlias('ang3_doctrine_cache_invalidator.logger', $this->formatServiceId($logger));
         }
+
+        // Si le service n'existe pas
+        if (!$container->hasDefinition($parameters['cache_id_resolver'])) {
+            throw new InvalidArgumentException(sprintf('Unable to find service "%s"', $logger));
+        }
+
+        // Enregistrement d'un alias sur le logger
+        $container->setAlias('ang3_doctrine_cache_invalidator.cache_id_resolver', $this->formatServiceId($parameters['cache_id_resolver']));
+    }
+
+    /**
+     * Formats service ID for Yaml definition.
+     *
+     * @param string $serviceId
+     *
+     * @return string
+     */
+    public function formatYamlServiceId($serviceId)
+    {
+        return '@' == substr($serviceId, 0, 1) ? substr($serviceId, 1) : $serviceId;
     }
 }

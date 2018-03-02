@@ -17,11 +17,11 @@ use Psr\Log\LoggerInterface;
 class InvalidatorListener
 {
     /**
-     * Cache invalidator parameters.
+     * Cache id resolver.
      *
-     * @var array
+     * @var CacheIdResolverInterface
      */
-    protected $parameters;
+    protected $cacheIdResolver;
 
     /**
      * Logger.
@@ -33,11 +33,11 @@ class InvalidatorListener
     /**
      * Constructor of the listener.
      *
-     * @param array $parameters
+     * @param CacheIdResolverInterface $cacheIdResolver
      */
-    public function __construct(array $parameters = [])
+    public function __construct(CacheIdResolverInterface $cacheIdResolver)
     {
-        $this->parameters = $parameters;
+        $this->cacheIdResolver = $cacheIdResolver;
     }
 
     /**
@@ -92,7 +92,7 @@ class InvalidatorListener
                 $changeSet = 'update' == $eventType ? $unitOfWork->getEntityChangeSet($entity) : [];
 
                 // Récupération des clés à supprimer pour cette entité
-                $entityCacheIds = $cacheIdResolver->resolve($entity, $eventType, $changeSet);
+                $entityCacheIds = $this->cacheIdResolver->resolve($entity, $eventType, $changeSet);
 
                 // Si pas de clé
                 if (!$entityCacheIds) {
