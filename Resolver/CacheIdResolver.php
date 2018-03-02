@@ -4,6 +4,7 @@ namespace Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver;
 
 use Exception;
 use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Exception\CacheInvalidationException;
+use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -21,6 +22,13 @@ class CacheIdResolver implements CacheIdResolverInterface
     protected $entityManager;
 
     /**
+     * Doctrine annotation reader.
+     *
+     * @var Reader
+     */
+    protected $annotationReader;
+
+    /**
      * Symfony expression language component.
      *
      * @var ExpressionLanguage
@@ -31,10 +39,12 @@ class CacheIdResolver implements CacheIdResolverInterface
      * Constructor of the resolver.
      *
      * @param EntityManagerInterface $entityManager
+     * @param Reader                 $annotationReader
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, Reader $annotationReader)
     {
         $this->entityManager = $entityManager;
+        $this->annotationReader = $annotationReader;
         $this->expressionLanguage = new ExpressionLanguage();
     }
 
