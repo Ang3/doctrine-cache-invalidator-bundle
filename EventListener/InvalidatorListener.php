@@ -47,7 +47,7 @@ class InvalidatorListener
      */
     public function setLogger(LoggerInterface $logger)
     {
-        $this->logger = $logguer;
+        $this->logger = $logger;
     }
 
     /**
