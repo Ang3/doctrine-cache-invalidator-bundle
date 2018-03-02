@@ -52,13 +52,12 @@ class AppKernel extends Kernel
 Step 3: Configure your app
 -------------------------
 
-No config is required, but you can configure a specific logger or cache ids resolver class:
+No config is required, but you can configure a specific logger:
 
 ```yaml
 # app/config/config.yml
 ang3_doctrine_cache_invalidator:
   logger: ~ # An optionnal logger ID
-  resolver_class: 'Ang3\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver' # default value
 ```
 
 Usage
