@@ -48,7 +48,7 @@ class Ang3DoctrineCacheInvalidatorExtension extends Extension implements Compile
             }
 
             // Enregistrement d'un alias sur le logger
-            $container->setAlias('ang3_doctrine_cache_invalidator.logger', $this->formatServiceId($logger));
+            $container->setAlias('ang3_doctrine_cache_invalidator.logger', $this->formatYamlServiceId($logger));
         }
 
         // Si le service n'existe pas
@@ -57,7 +57,7 @@ class Ang3DoctrineCacheInvalidatorExtension extends Extension implements Compile
         }
 
         // Enregistrement d'un alias sur le logger
-        $container->setAlias('ang3_doctrine_cache_invalidator.cache_id_resolver', $this->formatServiceId($parameters['cache_id_resolver']));
+        $container->setAlias('ang3_doctrine_cache_invalidator.cache_id_resolver', $this->formatYamlServiceId($parameters['cache_id_resolver']));
     }
 
     /**
