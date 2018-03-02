@@ -2,6 +2,7 @@
 
 namespace Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener;
 
+use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Annotation\CacheInvalidation;
 use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Exception\CacheInvalidationException;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
