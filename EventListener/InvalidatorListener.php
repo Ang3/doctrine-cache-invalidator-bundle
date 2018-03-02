@@ -33,13 +33,21 @@ class InvalidatorListener
     /**
      * Constructor of the listener.
      *
-     * @param array                $parameters
-     * @param LoggerInterface|null $logger
+     * @param array $parameters
      */
-    public function __construct(array $parameters = [], LoggerInterface $logger = null)
+    public function __construct(array $parameters = [])
     {
         $this->parameters = $parameters;
-        $this->logger = $logger;
+    }
+
+    /**
+     * Sets logger.
+     *
+     * @param LoggerInterface $logger
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logguer;
     }
 
     /**
