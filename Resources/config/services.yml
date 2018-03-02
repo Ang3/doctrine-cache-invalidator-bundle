@@ -11,6 +11,6 @@ services:
     class: Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener\InvalidatorListener
     arguments:
       - '%ang3_doctrine_cache_invalidator.parameters%'
-      - '@ang3_doctrine_cache_invalidator.logger'
+      - '@?ang3_doctrine_cache_invalidator.logger'
     tags :
       - { name: doctrine.event_listener, event: onFlush }
