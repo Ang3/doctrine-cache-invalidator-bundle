@@ -92,11 +92,11 @@ The invalidation process is during the "flush" entity operation. On each entity,
 // src/AppBundle/Entity/EntityA.php
 
 // Do not forget the "use" statement
-use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
+use Ang3\DoctrineCacheInvalidatorBundle\Annotation\CacheInvalidation;
 // ...
 
 /**
- * @Ang3\CacheInvalidation(id="my_custom_id")
+ * @CacheInvalidation(id="my_custom_id")
  */
 class EntityA
 {
@@ -120,11 +120,11 @@ In case of dynamic result cache ID, you can register variables like PHP (with ``
 // src/AppBundle/Entity/EntityA.php
 
 // Do not forget the "use" statement
-use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
+use Ang3\DoctrineCacheInvalidatorBundle\Annotation\CacheInvalidation;
 // ...
 
 /**
- * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"})
+ * @CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"})
  */
 class EntityA
 {
@@ -140,11 +140,11 @@ You can also submit the entity to a validation during process. You just have to 
 // src/AppBundle/Entity/EntityA.php
 
 // Do not forget the "use" statement
-use Ang3\DoctrineCacheInvalidatorBundle\Annotation as Ang3;
+use Ang3\DoctrineCacheInvalidatorBundle\Annotation\CacheInvalidation;
 // ...
 
 /**
- * @Ang3\CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"}, validation="eventType == 'update'")
+ * @CacheInvalidation(id="my_custom_.$id", parameters={"id":"this.getId()"}, validation="eventType == 'update'")
  */
 class EntityA
 {
