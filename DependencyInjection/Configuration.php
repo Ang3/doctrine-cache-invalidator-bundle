@@ -25,7 +25,6 @@ class Configuration implements ConfigurationInterface
             ->addDefaultsIfNotSet()
             ->children()
                 ->scalarNode('logger')->defaultNull()->end()
-                ->scalarNode('cache_id_resolver')->defaultValue('ang3_doctrine_invalidator.default_cache_id_resolver')->end()
             ->end()
         ;
 
