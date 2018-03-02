@@ -19,7 +19,7 @@ class InvalidatorListener
     /**
      * Cache invalidator parameters.
      *
-     * @var array|null
+     * @var array
      */
     protected $parameters;
 
@@ -115,13 +115,13 @@ class InvalidatorListener
             }
         }
 
-        // Récupération du cache de résultats
-        $resultCache = $entityManager->getConfiguration()->getResultCacheImpl();
-
         // Si pas de clé à supprimer
         if (!$cacheIds) {
-            // On log la clé supprimée
-            $this->logger->info('No key to delete.');
+            // Si on a un logger
+            if ($this->logger) {
+                // On log la clé supprimée
+                $this->logger->info('No key to delete.');
+            }
 
             // Fin de la méthode
             return;
@@ -132,6 +132,9 @@ class InvalidatorListener
             // On log les clés à supprimer
             $this->logger->info(sprintf('All keys to delete : %s', implode(',', $cacheIds)));
         }
+
+        // Récupération du cache de résultats
+        $resultCache = $entityManager->getConfiguration()->getResultCacheImpl();
 
         // Compteur de suppressions
         $counter = 0;

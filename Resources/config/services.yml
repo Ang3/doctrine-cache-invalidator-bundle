@@ -4,8 +4,6 @@ services:
     class: Ang3\Bundle\DoctrineCacheInvalidatorBundle\Resolver\CacheIdResolver
     arguments:
       - '@doctrine.orm.entity_manager'
-    tags :
-      - { name: doctrine.event_listener, event: onFlush }
   # Result cache ID invalidator listener
   ang3_doctrine_invalidator.invalidator_listener:
     class: Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener\InvalidatorListener
