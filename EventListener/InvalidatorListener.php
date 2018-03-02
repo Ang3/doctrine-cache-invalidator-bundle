@@ -99,78 +99,81 @@ class InvalidatorListener
 
                 // Pour chaque annotation d'invalidation du cache de la classe
                 foreach ($this->annotationReader->getClassAnnotations($entityClassMetadata->getReflectionClass()) as $annotation) {
-                    // Si c'est une annotation d'invalidation du cache
-                    if ($annotation instanceof CacheInvalidation) {
-                        // Récupération de l'ID de cache
-                        $entityCacheId = $annotation->id;
+                    // Si c'est pas une annotation d'invalidation du cache
+                    if (!($annotation instanceof CacheInvalidation)) {
+                        // Annotation suivante
+                        continue;
+                    }
 
-                        // Récupération des paramètres éventuels de l'ID
-                        $cacheIdParameters = $this->extractCacheIdParameters($entityCacheId);
+                    // Récupération de l'ID de cache
+                    $entityCacheId = $annotation->id;
 
-                        // Si on a des paramètre dans l'index
-                        if (count($cacheIdParameters) > 0) {
-                            // Si pas de paramètre dans la config
-                            if (!$annotation->parameters) {
-                                throw new CacheInvalidationException(sprintf('Missing parameters expressions for the cache id "%s" in class "%s".', $entityCacheId, $entityClass));
+                    // Récupération des paramètres éventuels de l'ID
+                    $cacheIdParameters = $this->extractCacheIdParameters($entityCacheId);
+
+                    // Si on a des paramètre dans l'index
+                    if (count($cacheIdParameters) > 0) {
+                        // Si pas de paramètre dans la config
+                        if (!$annotation->parameters) {
+                            throw new CacheInvalidationException(sprintf('Missing parameters expressions for the cache id "%s" in class "%s".', $entityCacheId, $entityClass));
+                        }
+
+                        // Pour chaque paramètre de l'index
+                        foreach ($cacheIdParameters as $name) {
+                            // Si le paramètre n'est pas dans la configuration
+                            if (!array_key_exists($name, $annotation->parameters)) {
+                                throw new CacheInvalidationException(sprintf('Missing expression for parameter "%s" for the cache id "%s" in class "%s".', $name, $entityCacheId, $entityClass));
                             }
 
-                            // Pour chaque paramètre de l'index
-                            foreach ($cacheIdParameters as $name) {
-                                // Si le paramètre n'est pas dans la configuration
-                                if (!array_key_exists($name, $annotation->parameters)) {
-                                    throw new CacheInvalidationException(sprintf('Missing expression for parameter "%s" for the cache id "%s" in class "%s".', $name, $entityCacheId, $entityClass));
-                                }
-
-                                try {
-                                    // Récupération de la valeur du paramètre
-                                    $paramValue = (string) $this->expressionLanguage
-                                        ->evaluate(
-                                            $annotation->parameters[$name],
-                                            [
-                                            'this' => $entity,
-                                            'eventType' => $eventType,
-                                            'changeSet' => $changeSet,
-                                        ]
-                                    );
-                                } catch (Exception $e) {
-                                    throw new CacheInvalidationException('Unable to resolve parameter "%s" for the cache id "%s" - %s in class "%s".', $name, $cacheId, $e->getMessage(), $entityClass);
-                                }
-
-                                // On remplace la valeur du paramètre dans l'index
-                                $entityCacheId = str_replace("\$$name", $paramValue, $entityCacheId);
+                            try {
+                                // Récupération de la valeur du paramètre
+                                $paramValue = (string) $this->expressionLanguage
+                                    ->evaluate(
+                                        $annotation->parameters[$name],
+                                        [
+                                        'this' => $entity,
+                                        'eventType' => $eventType,
+                                        'changeSet' => $changeSet,
+                                    ]
+                                );
+                            } catch (Exception $e) {
+                                throw new CacheInvalidationException('Unable to resolve parameter "%s" for the cache id "%s" - %s in class "%s".', $name, $cacheId, $e->getMessage(), $entityClass);
                             }
 
-                            // Si on a une expression de validation
-                            if ($annotation->validation) {
-                                // Initialisation de la validation
-                                $validation = false;
-
-                                try {
-                                    // Tentative de récupération du résultat de l'expression de validation
-                                    $validation = (bool) $this->expressionLanguage
-                                        ->evaluate(
-                                            $annotation->validation,
-                                            [
-                                            'this' => $entity,
-                                            'eventType' => $eventType,
-                                            'changeSet' => $changeSet,
-                                        ]
-                                    );
-                                } catch (Exception $e) {
-                                    throw new CacheInvalidationException('Unable to validate the cache id "%s" in class "%s" - %s', $entityCacheId, $entityClass, $e->getMessage());
-                                }
-
-                                // Si la validation n'est pas passée
-                                if (!$validation) {
-                                    // Classe suivante
-                                    continue;
-                                }
-                            }
-
-                            // Enregistrement de la clé
-                            $entityCacheIds[] = $entityCacheId;
+                            // On remplace la valeur du paramètre dans l'index
+                            $entityCacheId = str_replace("\$$name", $paramValue, $entityCacheId);
                         }
                     }
+
+                    // Si on a une expression de validation
+                    if ($annotation->validation) {
+                        // Initialisation de la validation
+                        $validation = false;
+
+                        try {
+                            // Tentative de récupération du résultat de l'expression de validation
+                            $validation = (bool) $this->expressionLanguage
+                                ->evaluate(
+                                    $annotation->validation,
+                                    [
+                                    'this' => $entity,
+                                    'eventType' => $eventType,
+                                    'changeSet' => $changeSet,
+                                ]
+                            );
+                        } catch (Exception $e) {
+                            throw new CacheInvalidationException('Unable to validate the cache id "%s" in class "%s" - %s', $entityCacheId, $entityClass, $e->getMessage());
+                        }
+
+                        // Si la validation n'est pas passée
+                        if (!$validation) {
+                            // Classe suivante
+                            continue;
+                        }
+                    }
+
+                    // Enregistrement de la clé
+                    $entityCacheIds[] = $entityCacheId;
                 }
 
                 // Dédoublonnage éventuel
