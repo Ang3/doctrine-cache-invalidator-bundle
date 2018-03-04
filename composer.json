@@ -12,7 +12,7 @@
         }
     ],
     "autoload": {
-        "psr-4": { "Ang3\\Bundle\\DoctrineCacheInvalidatorBundle\\": "" }
+        "psr-4": { "Ang3\\Bundle\\DoctrineCacheInvalidatorBundle\\": "src/" }
     },
     "require": {
         "php": ">=5.5.9",
