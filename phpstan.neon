@@ -1,0 +1,9 @@
+includes:
+  - vendor/phpstan/phpstan-doctrine/extension.neon
+parameters:
+  paths:
+    - %currentWorkingDirectory%/src
+  doctrine:
+    repositoryClass: Doctrine\ORM\EntityRepository
+  ignoreErrors:
+    - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::addDefaultsIfNotSet\(\).#'

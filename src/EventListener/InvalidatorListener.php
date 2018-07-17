@@ -2,8 +2,10 @@
 
 namespace Ang3\Bundle\DoctrineCacheInvalidatorBundle\EventListener;
 
+use Exception;
 use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Annotation\CacheInvalidation;
 use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Exception\CacheInvalidationException;
+use Ang3\Bundle\DoctrineCacheInvalidatorBundle\Helper\EntityChangeSetHelper;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
@@ -72,6 +74,15 @@ class InvalidatorListener
         // Récupération de l'unité de travail
         $unitOfWork = $entityManager->getUnitOfWork();
 
+        // Récupération du cache de résultats
+        $resultCache = $entityManager->getConfiguration()->getResultCacheImpl();
+
+        // Si pas de cache
+        if (null === $resultCache) {
+            // On stoppe tout
+            return;
+        }
+
         // Récupération des changements
         $scheduledEntityChanges = array(
             'insert' => $unitOfWork->getScheduledEntityInsertions(),
@@ -87,7 +98,7 @@ class InvalidatorListener
             // Pour chaque entité crée/modifiée/suprimée
             foreach ($entities as $entity) {
                 // Récupération des champs modifiés en cas d'update
-                $changeSet = 'update' == $eventType ? $unitOfWork->getEntityChangeSet($entity) : [];
+                $changeSet = new EntityChangeSetHelper($entity, 'update' == $eventType ? $unitOfWork->getEntityChangeSet($entity) : []);
 
                 // Récupération de la classe de l'entité
                 $entityClass = ClassUtils::getClass($entity);
@@ -128,7 +139,7 @@ class InvalidatorListener
 
                             try {
                                 // Récupération de la valeur du paramètre
-                                $paramValue = (string) $this->expressionLanguage
+                                $paramValue = $this->expressionLanguage
                                     ->evaluate(
                                         $annotation->parameters[$name],
                                         [
@@ -138,7 +149,7 @@ class InvalidatorListener
                                     ]
                                 );
                             } catch (Exception $e) {
-                                throw new CacheInvalidationException('Unable to resolve parameter "%s" for the cache id "%s" - %s in class "%s".', $name, $cacheId, $e->getMessage(), $entityClass);
+                                throw new CacheInvalidationException(sprintf('Unable to resolve parameter "%s" for the cache id "%s" - %s in class "%s".', $name, $entityCacheId, $e->getMessage(), $entityClass));
                             }
 
                             // On remplace la valeur du paramètre dans l'index
@@ -163,7 +174,7 @@ class InvalidatorListener
                                 ]
                             );
                         } catch (Exception $e) {
-                            throw new CacheInvalidationException('Unable to validate the cache id "%s" in class "%s" - %s', $entityCacheId, $entityClass, $e->getMessage());
+                            throw new CacheInvalidationException(sprintf('Unable to validate the cache id "%s" in class "%s" - %s', $entityCacheId, $entityClass, $e->getMessage()));
                         }
 
                         // Si la validation n'est pas passée
@@ -224,9 +235,6 @@ class InvalidatorListener
             $this->logger->info(sprintf('All keys to delete : %s', implode(',', $cacheIds)));
         }
 
-        // Récupération du cache de résultats
-        $resultCache = $entityManager->getConfiguration()->getResultCacheImpl();
-
         // Compteur de suppressions
         $counter = 0;
 
@@ -274,7 +282,7 @@ class InvalidatorListener
     protected function extractCacheIdParameters($key)
     {
         // Recherche des index
-        if (preg_match_all('#\$(\$?\w+)#', (string) $key, $matches)) {
+        if (preg_match_all('#\$(\$?\w+)#', $key, $matches)) {
             // Enregistrement des parametres eventuels
             return $matches[1];
         }

@@ -13,11 +13,11 @@ class CacheInvalidationException extends RuntimeException
     /**
      * Constructor of the exception.
      *
-     * @param string         $message
+     * @param string|null    $message
      * @param Throwable|null $previous
      */
     public function __construct($message = null, Throwable $previous = null)
     {
-        parent::__construct($message, 0, $previous);
+        parent::__construct($message ?: 'An error occured.', 0, $previous);
     }
 }
