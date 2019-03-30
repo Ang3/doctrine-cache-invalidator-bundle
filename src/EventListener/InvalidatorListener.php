@@ -91,14 +91,14 @@ class InvalidatorListener
         );
 
         // Initialisation des clés à supprimer
-        $cacheIds = [];
+        $cacheIds = array();
 
         // Pour chaque type de changement
         foreach ($scheduledEntityChanges as $eventType => $entities) {
             // Pour chaque entité crée/modifiée/suprimée
             foreach ($entities as $entity) {
                 // Récupération des champs modifiés en cas d'update
-                $changeSet = new EntityChangeSetHelper($entity, 'update' == $eventType ? $unitOfWork->getEntityChangeSet($entity) : []);
+                $changeSet = new EntityChangeSetHelper($entity, 'update' == $eventType ? $unitOfWork->getEntityChangeSet($entity) : array());
 
                 // Récupération de la classe de l'entité
                 $entityClass = ClassUtils::getClass($entity);
@@ -107,7 +107,7 @@ class InvalidatorListener
                 $entityClassMetadata = $entityManager->getClassMetadata($entityClass);
 
                 // Initialisation des ID de cache de l'entité
-                $entityCacheIds = [];
+                $entityCacheIds = array();
 
                 // Pour chaque annotation d'invalidation du cache de la classe
                 foreach ($this->annotationReader->getClassAnnotations($entityClassMetadata->getReflectionClass()) as $annotation) {
@@ -140,13 +140,11 @@ class InvalidatorListener
                             try {
                                 // Récupération de la valeur du paramètre
                                 $paramValue = $this->expressionLanguage
-                                    ->evaluate(
-                                        $annotation->parameters[$name],
-                                        [
+                                    ->evaluate($annotation->parameters[$name], array(
                                         'this' => $entity,
                                         'eventType' => $eventType,
                                         'changeSet' => $changeSet,
-                                    ]
+                                    )
                                 );
                             } catch (Exception $e) {
                                 throw new CacheInvalidationException(sprintf('Unable to resolve parameter "%s" for the cache id "%s" - %s in class "%s".', $name, $entityCacheId, $e->getMessage(), $entityClass));
@@ -165,13 +163,11 @@ class InvalidatorListener
                         try {
                             // Tentative de récupération du résultat de l'expression de validation
                             $validation = (bool) $this->expressionLanguage
-                                ->evaluate(
-                                    $annotation->validation,
-                                    [
+                                ->evaluate($annotation->validation, array(
                                     'this' => $entity,
                                     'eventType' => $eventType,
                                     'changeSet' => $changeSet,
-                                ]
+                                )
                             );
                         } catch (Exception $e) {
                             throw new CacheInvalidationException(sprintf('Unable to validate the cache id "%s" in class "%s" - %s', $entityCacheId, $entityClass, $e->getMessage()));
@@ -288,6 +284,6 @@ class InvalidatorListener
         }
 
         // Retour vide par défaut
-        return [];
+        return array();
     }
 }
