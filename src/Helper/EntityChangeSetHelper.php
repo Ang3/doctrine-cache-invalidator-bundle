@@ -48,6 +48,56 @@ class EntityChangeSetHelper
     }
 
     /**
+     * Check if change set is related to at least one of given property names.
+     *
+     * @param array|string $propertyNames
+     *
+     * @return bool
+     */
+    public function hasAtLeastOne($propertyNames)
+    {
+        // Définition des noms de propriétés en tableau
+        $propertyNames = (array) $propertyNames;
+
+        // Pour chaque propriété modifiées
+        foreach ($this->changeSet as $name => $values) {
+            // Si le nom de la propriété est dans le tableau des propriétés recherchées
+            if (in_array($name, $propertyNames)) {
+                // Retour positif
+                return true;
+            }
+        }
+
+        // Retour négatif par défaut
+        return false;
+    }
+
+    /**
+     * Check if change set is related to all given property names.
+     *
+     * @param array|string $propertyNames
+     *
+     * @return bool
+     */
+    public function hasAll($propertyNames)
+    {
+        // Définition des noms de propriétés en tableau
+        $propertyNames = (array) $propertyNames;
+
+        // Pour chaque propriété modifiées
+        foreach ($this->changeSet as $name => $values) {
+            // Si le nom de la propriété est dans le tableau des propriétés recherchées
+            if (!in_array($name, $propertyNames)) {
+                // Retour négatif
+                return false;
+            }
+        }
+
+        // Retour positif par défaut
+        return false;
+    }
+
+    /**
      * Get the old value of a property.
      *
      * @param string $propertyName

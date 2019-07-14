@@ -159,7 +159,7 @@ For each expression these variables are passed during the evaluation :
 
 - ```this``` (object) the added/edited/deleted entity
 - ```eventType``` (string) 'insert', 'update' ou 'delete'
-- ```changeSet``` (array) entity updated fields values in case of update (empty array if eventType is equal to 'insert' or 'delete')
+- ```changeSet``` an instance of class ```Ang3\Bundle\DoctrineCacheInvalidatorBundle\Helper\EntityChangeSetHelper```
 
 Todo
 ====
